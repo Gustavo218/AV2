@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ximbolé Bahiano</title>
+    <script>
+    function mostraInfo(strUF) {
+        console.log(strUF);
+        if (strUF.length > 0) {
+            let xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() {
+                console.log("ReadyState: " + this.readyState);
+                if (this.readyState == 4 && this.status == 200) {
+                    //let obj = JSON.parse(this.responseText);
+                    let obj = this.responseText;
+                    let cities = document.getElementById("cidade");
+                     //for (i=0;i<obj.length;i++) {
+                        //console.log("cidade: " + obj[i]);
+                        let city = new Option(obj, obj);
+                        cities.options.add(city);
+                    
+                }
+            }
+            xmlHttp.open("GET", "http://localhost/3DAW/20/ex20_GetCidades.php?estado=" + strUF, true);
+            xmlHttp.send();
+            console.log("requisição enviada");
+        }
+        }</script>
+</head>
+<body>
+    <h2>Menu principal</h2>
+    <nav>
+        <ul class="menu">
+                    <li><a href="http://localhost/3DAW/AV2/Lista_todos_produtos">Listar produtos</a>
+                       <ul>
+                            <li><a href="http://localhost/3DAW/AV2/Listar_produto_cod_barras.html">Procurar produto</a></li>
+                            <li><a href="http://localhost/3DAW/AV2/Incluir_produto.html">Incluir produto</a></li>
+                            <li><a href="#">Alterar produto</a></li>
+                            <li><a href="#">Excluir produto</a></li>
+                         </ul>
+                  </li>
+      </ul>
+      </nav>
+</body>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <script>
+        function mostraTipo(strUF) {
+            console.log(strUF);
+            if (strUF.length > 0) {
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    console.log("ReadyState: " + this.readyState);
+                    if (this.readyState == 4 && this.status == 200) {
+                        let obj = JSON.parse(this.responseText);
+                        let tipos = document.getElementById("tipo_produto");
+                        for (i=0;i<obj.length;i++){
+                            let tipo = new Option(obj[i],obj[i]);
+                            tipos.options.add(tipo);
+                        }
+                    }
+                }
+                xmlHttp.open("GET", "https://localhost/3DAW/AV2/Incluir_produto.php?produto=" + strUF, true);
+                xmlHttp.send();
+                console.log("requisição enviada");
+            }
+        }
+        function mostraCategoria(strUF) {
+            console.log(strUF);
+            if (strUF.length > 0) {
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    console.log("ReadyState: " + this.readyState);
+                    if (this.readyState == 4 && this.status == 200) {
+                        let obj = JSON.parse(this.responseText);
+                        let catgorias = document.getElementById("categoria");
+                        for (i=0;i<obj.lenght;i++){
+                            let catg = new Option(obj[i],obj[i]);
+                            categorias.options.add(categoria);
+                        }
+                    }
+                }
+                xmlHttp.open("GET", "https://localhost/3DAW/AV2/Incluir_produto.php?produto=" + strUF, true);
+                xmlHttp.send();
+                console.log("requisição enviada");
+            }
+        }
+        function inserirProduto() {
+            let objProduto = document.getElementById("formProduto");
+            let msg = validarProduto(objProduto);
+            if (msg == "") {
+                let xmlHttp = new XMLHttpRequest();
+                xmlHttp.onreadystatechange = function() {
+                    if (this.readyState == 4 && this.status == 200) {
+                        let obj = JSON.parse(this.responseText);
+                        document.getElementById("resposta").innerHTML = this.responseText;
+                    }
+                }
+                xmlHttp.open("GET", "https://localhost/3DAW/AV2/Incluir_produto.php?nome=" + objProduto.nome.value +
+                            "&fabricante=" + objProduto.fabricante.value + "&cod_barras=" + objProduto.cod_barras.value + "&preco_venda=" +
+                            objProduto.preco_venda.value + "&uf=" + objProduto.uf.value + "&categoria=" + objProduto.categoria.value + "&tipo_produto="
+                            + objProduto.tipo_produto.value + "&preco_venda" + objProduto.preco_venda.value + "&qtd_estoque" + objProduto.qtd_estoque.value +
+                            "&peso_gramas" + objProduto.peso_gramas.value + "&descricao" + objProduto.descricao.value + "&data_inclusao" + objProduto.data_inclusao.value +
+                            "&ativo" + objProduto.ativo.value, true);
+                xmlHttp.send();
+                console.log("requisição enviada");
+            }
+            document.getElementById("resposta").innerHTML = msg;
+        }
+        function validarProduto(fProduto) {
+            let objValidForm = document.getElementById("formProduto");
+            let nome = objValidForm.nome.value;
+            let cod_barras = objValidForm.cod_barras.value;
+            let fabricante = objValidForm.fabricante.value;
+            let uf = objValidForm.uf.value;
+            let rg = "^(\S+)@(\S+)\.(\S+)$";
+            let aviso = "";
+            if (!testafabricante(fabricante)) {
+                aviso = aviso + "fabricante Invalido. <br>";
+                alert(aviso);
+            }
+            if (nome ===""){
+                aviso = "Preencha o campo nome. <br>";
+                alert(aviso);
+            }
+            if (!Testacod_barras(cod_barras)) {
+                aviso = aviso + "cod_barras Invalido. <br>";
+                alert(aviso);
+            }
+            if (validaTipo(tipo) == 1) {
+                aviso = aviso + "Tipo Invalido. <br>";
+                alert(aviso);
+            }
+            return aviso;
+        }
+        function testafabricante(strfabricante) {
+        }
+        function validaTipo(strUF) {
+            const tipos = ["tipo1", "tipo2", "tipo", "AM", "MT", "BA", "CE", "MG", "SP", "RR"];
+            let errorUF = 1;
+            for (let i=0;i<10;i++) {
+                if (estados[i] == strUF) {
+                    console.log("encontrei estado " + strUF);
+                    errorUF=0;
+                    i=10;
+                }
+            }
+            return errorUF;
+        }
+        function Testacod_barras(strcod_barras) {
+
+        }
+    </script>
+</head>
+<body>
+<h3>Inserção de produto</h3>
+<form method="post" name="Produto" id="formProduto">
+    Código de barras: <input type = "text" name="cod_barras"><br><br>
+    Nome: <input type="text" name="nome"> <br><br>
+    Fabricante: <input type="text" name="fabricante"> <br><br>
+    Categoria: <select id="categoria" name="categoria" onclick="mostraCategoria(this.value)"></select> <br><br>
+    Tipo:  <select id="tipo_produto" onclick="mostraTipo(this.value)"></select> <br><br>
+    Preço: <input type="number" name="preco_venda"> <br><br>
+    Quantidade: <input type="number" name="qtd_estoque"> <br><br>
+    Peso (gramas): <input type="number" name="peso_gramas"> <br><br>
+    Descricao : <br><input type="text" rows ="4" cols= "50" name="descricao"></textarea> 
+    Imagem: <input type="image" name="imagem"> <br><br>
+    Data de inclusão: <input type="date" name="data_inclusao"><br><br>
+    Ativo? <input type="number" name="ativo">0=não 1=sim<br><br>
+    <input type="button" name="op" value="Inserir Produto" onclick="inserirProduto()">
+</form>
+<p id="resposta"></p>
+</body>
+</html>
